@@ -22,15 +22,15 @@ import androidx.core.content.ContextCompat;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.mlkit.vision.barcode.BarcodeScanner;
+import com.google.mlkit.vision.barcode.BarcodeScannerOptions;
+import com.google.mlkit.vision.barcode.BarcodeScanning;
+import com.google.mlkit.vision.barcode.common.Barcode;
 import com.google.mlkit.vision.common.InputImage;
 import com.google.mlkit.vision.face.Face;
 import com.google.mlkit.vision.face.FaceDetection;
 import com.google.mlkit.vision.face.FaceDetector;
 import com.google.mlkit.vision.face.FaceDetectorOptions;
-import com.google.mlkit.vision.label.ImageLabel;
-import com.google.mlkit.vision.label.ImageLabeler;
-import com.google.mlkit.vision.label.ImageLabeling;
-import com.google.mlkit.vision.label.defaults.ImageLabelerOptions;
 import com.google.mlkit.vision.text.Text;
 import com.google.mlkit.vision.text.TextRecognition;
 import com.google.mlkit.vision.text.TextRecognizer;
@@ -61,38 +61,10 @@ public class MainActivity extends AppCompatActivity {
         Button btFace = findViewById(R.id.btFace);
         Button btLabel = findViewById(R.id.btLabel);
 
-        btGallery.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                abrirGaleria();
-            }
-        });
-
-        btCamera.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                abrirCamera();
-            }
-        });
-
-        btText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                OCRfx();
-            }
-        });
-
-        btFace.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Rostrosfx();
-            }
-        });
-
         btLabel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Labeling();
+                scanBarcode();
             }
         });
 
@@ -101,12 +73,12 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void abrirGaleria() {
+    public void abrirGaleria(View view) {
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(intent, REQUEST_CHOOSE_IMAGE);
     }
 
-    public void abrirCamera() {
+    public void abrirCamera(View view) {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         startActivityForResult(intent, REQUEST_IMAGE_CAPTURE);
     }
@@ -128,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void OCRfx() {
+    public void OCRfx(View view) {
         if (mSelectedImage == null) {
             txtResults.setText("Por favor, seleccione una imagen primero.");
             return;
@@ -150,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
-    public void Rostrosfx() {
+    public void Rostrosfx(View view) {
         if (mSelectedImage == null) {
             txtResults.setText("Por favor, seleccione una imagen primero.");
             return;
@@ -192,29 +164,53 @@ public class MainActivity extends AppCompatActivity {
         imageView.setImageBitmap(bitmap);
     }
 
-    public void Labeling() {
+    public void scanBarcode() {
         if (mSelectedImage == null) {
             txtResults.setText("Por favor, seleccione una imagen primero.");
             return;
         }
         InputImage image = InputImage.fromBitmap(mSelectedImage, 0);
-        ImageLabeler labeler = ImageLabeling.getClient(ImageLabelerOptions.DEFAULT_OPTIONS);
-        labeler.process(image)
-                .addOnSuccessListener(new OnSuccessListener<List<ImageLabel>>() {
+        BarcodeScannerOptions options =
+                new BarcodeScannerOptions.Builder()
+                        .setBarcodeFormats(
+                                Barcode.FORMAT_QR_CODE,
+                                Barcode.FORMAT_AZTEC,
+                                Barcode.FORMAT_ALL_FORMATS)
+                        .build();
+        BarcodeScanner scanner = BarcodeScanning.getClient(options);
+        scanner.process(image)
+                .addOnSuccessListener(new OnSuccessListener<List<Barcode>>() {
                     @Override
-                    public void onSuccess(List<ImageLabel> labels) {
-                        StringBuilder resultText = new StringBuilder();
-                        for (ImageLabel label : labels) {
-                            resultText.append(label.getText()).append(" : ")
-                                    .append(label.getConfidence()).append("\n");
+                    public void onSuccess(List<Barcode> barcodes) {
+                        if (barcodes.isEmpty()) {
+                            txtResults.setText("No se detectaron códigos de barras o QR.");
+                        } else {
+                            StringBuilder resultText = new StringBuilder();
+                            for (Barcode barcode : barcodes) {
+                                String rawValue = barcode.getRawValue();
+                                resultText.append("Valor: ").append(rawValue).append("\n");
+                                int valueType = barcode.getValueType();
+                                switch (valueType) {
+                                    case Barcode.TYPE_URL:
+                                        resultText.append("Tipo: URL\n");
+                                        break;
+                                    case Barcode.TYPE_PRODUCT:
+                                        resultText.append("Tipo: Producto\n");
+                                        break;
+
+                                    default:
+                                        resultText.append("Tipo: Otro\n");
+                                }
+                                resultText.append("\n");
+                            }
+                            txtResults.setText(resultText.toString());
                         }
-                        txtResults.setText(resultText.toString());
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        txtResults.setText("Error: " + e.getMessage());
+                        txtResults.setText("Error en el escaneo: " + e.getMessage());
                     }
                 });
     }

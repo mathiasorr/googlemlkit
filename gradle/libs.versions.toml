@@ -7,6 +7,7 @@ barcodeScanningVersion = "17.1.0"
 espressoCoreVersion = "3.5.1"
 faceDetection = "16.1.7"
 faceDetectionVersion = "16.1.5"
+googleBarcodeScanning = "17.2.0"
 imageLabeling = "17.0.9"
 imageLabelingVersion = "17.0.7"
 junit = "4.13.2"
@@ -29,6 +30,7 @@ textRecognitionVersion = "16.0.0"
 appcompat-v161 = { module = "androidx.appcompat:appcompat", version.ref = "appcompatVersion" }
 barcode-scanning = { module = "com.google.mlkit:barcode-scanning", version.ref = "barcodeScanning" }
 barcode-scanning-v1710 = { module = "com.google.mlkit:barcode-scanning", version.ref = "barcodeScanningVersion" }
+barcode-scanning-v1720 = { module = "com.google.mlkit:barcode-scanning", version.ref = "googleBarcodeScanning" }
 espresso-core-v351 = { module = "androidx.test.espresso:espresso-core", version.ref = "espressoCoreVersion" }
 face-detection = { module = "com.google.mlkit:face-detection", version.ref = "faceDetection" }
 face-detection-v1615 = { module = "com.google.mlkit:face-detection", version.ref = "faceDetectionVersion" }
