@@ -6,8 +6,9 @@ ORTEGA RIZZO ANGEL MATHIAS
 PALLO PINTO JENNYFER NAYELI
 VILLAO ZAMORA MARCOS ADRIAN
 
-![image](https://github.com/user-attachments/assets/d7771180-528c-42d7-9ff6-09993556de61)
-![image](https://github.com/user-attachments/assets/e7158dd9-d389-403c-a13b-663fbc6401c4)
-![image](https://github.com/user-attachments/assets/937ab3f0-10e3-4585-b4fd-ba2d405d2ccc)
-![image](https://github.com/user-attachments/assets/e7dfd541-250b-4494-bcdb-4bf1de07b59a)
-
+(ACTUALIZACIÓN: CORREGIDO LA INTEGRACIÓN DE GOOGLE ML KIT, ADEMÁS USAMOS QR VÁLIDOS PARA PODER HACER LA VERIFICACIÓN DEL CORRECTO FUNCIONAMIENTO)
+CONTRASEÑA DE WIFI
+![image](https://github.com/user-attachments/assets/311006bd-3e83-4689-bf61-4b49f44e4880) (c)
+CÓDIGOS QR VÁLIDOS
+![image](https://github.com/user-attachments/assets/604f2fad-35e6-4d29-8cf0-6ff084ad8b59)
+![image](https://github.com/user-attachments/assets/9ee18aee-95cc-4941-b1ad-e51e049ad0b3)
